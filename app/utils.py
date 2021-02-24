@@ -1,4 +1,8 @@
 import subprocess as sp
+import time
+from datetime import datetime
+
+from base.database import NodeInfo
 
 
 def parse_output(text: str) -> list:
@@ -53,3 +57,25 @@ def check_install(manage_ip):
     out, err = process.communicate()
     return err is None
 
+
+def wait_install(node, bmc, mac, manage_ip):
+    flag = True
+    # 首先等待50分钟
+    time.sleep(50*60)
+    ok = check_install(manage_ip=manage_ip)
+    if not ok and flag:
+        # 若没有安装成功 再等待一个5分钟
+        time.sleep(60)
+        flag = False
+        ok = check_install(manage_ip)
+
+    # 将结果同步到数据库中
+    n = NodeInfo.select().where(
+        NodeInfo.node == node,
+        NodeInfo.mac == mac,
+        NodeInfo.bmc == bmc
+    ).get()
+
+    n.result = "success" if ok else "unsuccess"
+    n.finish_at = datetime.now()
+    n.save()
