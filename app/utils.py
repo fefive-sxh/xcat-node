@@ -58,7 +58,7 @@ def check_install(manage_ip):
     return err is None
 
 
-def wait_install(node, bmc, mac, manage_ip):
+def wait_install(*, node, bmc, manage_ip):
     flag = True
     # 首先等待50分钟
     time.sleep(50*60)
@@ -72,7 +72,6 @@ def wait_install(node, bmc, mac, manage_ip):
     # 将结果同步到数据库中
     n = NodeInfo.select().where(
         NodeInfo.node == node,
-        NodeInfo.mac == mac,
         NodeInfo.bmc == bmc
     ).get()
 

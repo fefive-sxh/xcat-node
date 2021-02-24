@@ -1,11 +1,12 @@
-import subprocess as sp
 from datetime import datetime
 from typing import List
+import threading
+import subprocess as sp
 
 from flask import flash
 from peewee import *
 
-from app.utils import parse_output
+from app.utils import parse_output, wait_install
 from base import database
 from base.database import NodeInfo
 
@@ -82,6 +83,10 @@ def update_node_info(*, id: str, bmc: str, os: str, nvd: str, manage_ip: str, ca
     osimage = f"{os}-x86_64-install-compute-{nvd}"
     cmd = f"nodeset {node} {osimage=}"
     process2 = sp.Popen(cmd, stdout=sp.PIPE, shell=True)
+
+    # 此时可以开一个线程去监听是否安装成功
+    thread = threading.Thread(target=wait_install(node=node, bmc=bmc))
+    thread.run()
 
     # 3. 执行安装 `rsetboot 节点名 net`  `rpower 节点名 reset`
     shell1 = f"rsetboot {node} net"
