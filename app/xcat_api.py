@@ -36,8 +36,4 @@ def get_node_log():
     return get_nodes_log_view()
 
 
-if __name__ == '__main__':
-    create_tables()
-    app.run()
-
 
