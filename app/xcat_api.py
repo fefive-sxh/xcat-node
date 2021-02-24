@@ -34,6 +34,3 @@ def update_node(nodeId):
 @app.route("/v1/xcat/nodes/log", methods=["GET"])
 def get_node_log():
     return get_nodes_log_view()
-
-
-
