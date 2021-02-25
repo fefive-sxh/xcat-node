@@ -21,6 +21,7 @@ def get_nodes_view():
             "manageIp": node.get("manage_ip", ""),
             "calIp": node.get("cal_ip", ""),
             "cratedAt": node.get("created_at", ""),
+            "script": node.get("script", "")
         }
 
         result.append(item)
@@ -34,19 +35,27 @@ def update_node_view(node: str):
     :param node:
     :return:
     """
-    params, _ = NodeInfoSchema().load(request.get_json())
-    os = params["os"]
-    nvidia = params["nvidia"]
-    manage_ip = params["manageIp"]
-    cal_ip = params["calIp"]
-    script = params["script"]
-    name = params["node"]
+
+    # params, _ = NodeInfoSchema().load(request.get_json())
+    # os = params["os"]
+    # nvidia = params["nvidia"]
+    # manage_ip = params["manageIp"]
+    # cal_ip = params["calIp"]
+    # script = params["script"]
+    # name = params["node"]
+
+    os = request.form["os"]
+    nvidia = request.form["nvidia"]
+    manage_ip = request.form["manageIp"]
+    cal_ip = request.form["calIp"]
+    script = request.form["script"]
+    name = request.form["node"]
+    bmc = request.form["bmc"]
 
     if name == node:
-        update_node_info(os=os, nvd=nvidia, manage_ip=manage_ip, cal_ip=cal_ip, script=script, node=node)
-        return 200
-    else:
-        return 400
+        update_node_info(os=os, nvd=nvidia, manage_ip=manage_ip, cal_ip=cal_ip, script=script, node=name, bmc=bmc)
+    return {}, 200
+
 
 
 def get_nodes_log_view():

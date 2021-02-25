@@ -29,5 +29,5 @@ class NodeInfo(BaseModel):
     operator = CharField()              # 操作人员
     script = TextField()                # 自定义脚本
     created_at = DateTimeField()        # 创建时间
-    mac = CharField()                   # mac 地址
+    # mac = CharField()                   # mac 地址
 
