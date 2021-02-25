@@ -43,7 +43,6 @@ def get_nodes_info() -> List[dict]:
             node["manageIp"] = item.manage_ip
             node["os"] = item.os
             node["nvidia"] = item.nvidia
-            node["id"] = item.id
             node["script"] = item.script
             node["calIp"] = item.cal_ip
             node["createdAt"] = item.created_at
@@ -51,9 +50,9 @@ def get_nodes_info() -> List[dict]:
     return result
 
 
-def update_node_info(*, id: str, bmc: str, os: str, nvd: str, manage_ip: str, cal_ip: str, script: str, node: str):
+def update_node_info(*, bmc: str, os: str, nvd: str, manage_ip: str, cal_ip: str, script: str, node: str):
     # 若id存在 则是更新, 不存在则是创建
-    if id:
+    if node:
         n = NodeInfo.select().where(NodeInfo.id == id).get()
         n.bmc = bmc
         n.os = os

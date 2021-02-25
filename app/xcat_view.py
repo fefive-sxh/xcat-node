@@ -22,16 +22,16 @@ def get_nodes_view():
             "calIp": node.get("cal_ip", ""),
             "cratedAt": node.get("created_at", ""),
         }
+
         result.append(item)
-    # 返回的是 text
-    # return json.dumps(result), 200
+
     return jsonify(result), 200
 
 
-def update_node_view(node_id: str):
+def update_node_view(node: str):
     """
     更新节点
-    :param node_id:
+    :param node:
     :return:
     """
     params, _ = NodeInfoSchema().load(request.get_json())
@@ -40,11 +40,13 @@ def update_node_view(node_id: str):
     manage_ip = params["manageIp"]
     cal_ip = params["calIp"]
     script = params["script"]
-    node = params["node"]
+    name = params["node"]
 
-    update_node_info(id=node_id, os=os, nvd=nvidia, manage_ip=manage_ip, cal_ip=cal_ip, script=script, node=node)
-
-    return 200
+    if name == node:
+        update_node_info(os=os, nvd=nvidia, manage_ip=manage_ip, cal_ip=cal_ip, script=script, node=node)
+        return 200
+    else:
+        return 400
 
 
 def get_nodes_log_view():
