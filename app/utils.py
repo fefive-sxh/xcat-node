@@ -7,9 +7,7 @@ from base.database import NodeInfo
 
 def parse_output(text: str) -> list:
     # 1. 去除 \n 和 空格
-    text = text.decode("utf-8")
-    text.replace(" ", "")
-    text.replace("\n", " ")
+    text = text.decode("utf-8").replace(" ", "").replace("\n", " ")
     """
     处理之后为:
     'Objectname:dce-gpu-64 arch=x86_64 bmc=192.168.126.64 currchain=boot currstate=installcentos7-x86_64-compute groups=test,all,gpu ip=192.168.111.64 mac=ac:1f:6b:a5:00:c2 mgt=ipmi netboot=pxe os=centos7 postbootscripts=otherpkgs postscripts=syslog,remoteshell,syncfiles profile=compute provmethod=centos7-x86_64-install-compute-cuda10.1 Objectname:dce-gpu-65 arch=x86_64 bmc=192.168.126.65 groups=test,all,gpu ip=192.168.111.65 mac=ac:1f:6b:a5:00:c3 mgt=ipmi netboot=pxe os=centos7.8 postbootscripts=otherpkgs postscripts=syslog,remoteshell,syncfiles '

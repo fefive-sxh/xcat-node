@@ -2,7 +2,7 @@ from flask import Flask
 from flask import g
 
 from app.xcat_view import get_nodes_view, update_node_view, get_nodes_log_view
-from base.database import database
+from base.database import db
 
 app = Flask(__name__)
 app.config.from_object(__name__)
@@ -10,7 +10,7 @@ app.config.from_object(__name__)
 
 @app.before_request
 def before_request():
-    g.db = database
+    g.db = db
     g.db.connect()
 
 

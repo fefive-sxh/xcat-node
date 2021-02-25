@@ -1,9 +1,8 @@
-from marshmallow import fields
+from marshmallow import fields, Schema
 
 
 # 节点信息Schema
-
-class NodeInfoSchema:
+class NodeInfoSchema(Schema):
     id = fields.String()
     node = fields.String(required=True)
     os = fields.String()

@@ -8,14 +8,17 @@ from peewee import *
 
 from app.utils import parse_output, wait_install
 from base import database
-from base.database import NodeInfo
+from base.database import NodeInfo, db
+
+#　设置一下远程登录
+ssh = "ssh root@10.10.100.90"
 
 
 def get_nodes_info() -> List[dict]:
     # 一部分存到数据库中, 一部分从命令行中获得
 
     # 从命令行中获得
-    process = sp.Popen("lsdef -t node -l", stdout=sp.PIPE, shell=True)
+    process = sp.Popen(f"{ssh} lsdef -t node -l", stdout=sp.PIPE, shell=True)
     out, err = process.communicate()
     # out 是一段字符串, 将其序列化
     result = parse_output(out)
@@ -26,11 +29,15 @@ def get_nodes_info() -> List[dict]:
         name = node.get("node")
         mac = node.get("mac")
         bmc = node.get("bmc")
-        item = NodeInfo.select().where(
-            NodeInfo.node == name,
-            NodeInfo.bmc == bmc,
-            NodeInfo.mac == mac
-        ).get()
+        try:
+            with db.atomic():
+                item = NodeInfo.select().where(
+                    NodeInfo.node == name,
+                    NodeInfo.bmc == bmc,
+                    NodeInfo.mac == mac
+                ).get()
+        except DoesNotExist:
+            continue
 
         if item:
             node["manageIp"] = item.manage_ip
@@ -59,7 +66,7 @@ def update_node_info(*, id: str, bmc: str, os: str, nvd: str, manage_ip: str, ca
     else:
         # 同步到数据库
         try:
-            with database.atomic():
+            with db.atomic():
                 node = NodeInfo.create(
                     node=node,
                     os=os,
@@ -81,7 +88,7 @@ def update_node_info(*, id: str, bmc: str, os: str, nvd: str, manage_ip: str, ca
 
     # 2. 配置操作系统和GPU驱动 nodeset 节点名 osimage=操作系统版本-x86_64-install-compute-cuda版本号
     osimage = f"{os}-x86_64-install-compute-{nvd}"
-    cmd = f"nodeset {node} {osimage=}"
+    cmd = f"{ssh} nodeset {node} {osimage=}"
     process2 = sp.Popen(cmd, stdout=sp.PIPE, shell=True)
 
     # 此时可以开一个线程去监听是否安装成功
@@ -89,8 +96,8 @@ def update_node_info(*, id: str, bmc: str, os: str, nvd: str, manage_ip: str, ca
     thread.run()
 
     # 3. 执行安装 `rsetboot 节点名 net`  `rpower 节点名 reset`
-    shell1 = f"rsetboot {node} net"
-    shell2 = f"rpower {node} reset"
+    shell1 = f"{ssh} rsetboot {node} net"
+    shell2 = f"{ssh} rpower {node} reset"
     process3 = sp.Popen(shell1, stdout=sp.PIPE, shell=True)
     process4 = sp.Popen(shell2, stdout=sp.PIPE, shell=True)
     return

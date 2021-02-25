@@ -1,5 +1,4 @@
-from flask import request
-from marshmallow import fields, Schema
+from flask import request, json, jsonify
 
 from app.schema import NodeInfoSchema
 from app.xcat import get_nodes_info, update_node_info
@@ -14,17 +13,19 @@ def get_nodes_view():
     result = []
     for node in node_list:
         item = {
-            "id": node.id,
-            "node": node.node,
-            "os": node.os,
-            "nvidia": node.nvidia,
-            "bmc": node.bmc,
-            "manageIp": node.manage_ip,
-            "calIp": node.cal_ip,
-            "cratedAt": node.created_at,
+            "id": node.get("id", ""),
+            "node": node.get("node", ""),
+            "os": node.get("os", ""),
+            "nvidia": node.get("nvidia", ""),
+            "bmc": node.get("bmc", ""),
+            "manageIp": node.get("manage_ip", ""),
+            "calIp": node.get("cal_ip", ""),
+            "cratedAt": node.get("created_at", ""),
         }
         result.append(item)
-    return NodeInfoSchema(many=True).dump(result).data, 200
+    # 返回的是 text
+    # return json.dumps(result), 200
+    return jsonify(result), 200
 
 
 def update_node_view(node_id: str):
@@ -43,8 +44,7 @@ def update_node_view(node_id: str):
 
     update_node_info(id=node_id, os=os, nvd=nvidia, manage_ip=manage_ip, cal_ip=cal_ip, script=script, node=node)
 
-    #
-    return [], 200
+    return 200
 
 
 def get_nodes_log_view():
@@ -56,16 +56,16 @@ def get_nodes_log_view():
     result = []
     for log in log_list:
         item = {
-            "finishAt": log.finish_at,
-            "node": log.node,
-            "os": log.os,
-            "nvidia": log.nvidia,
-            "bmc": log.bmc,
-            "manageIp": log.manage_ip,
-            "calIp": log.cal_ip,
-            "result": log.result,
-            "createdAt": log.created_at,
-            "operator": log.operator,
+            "finishAt": log.get("finish_at", ""),
+            "node": log.get("node", ""),
+            "os": log.get("os", ""),
+            "nvidia": log.get("nvidia", ""),
+            "bmc": log.get("bmc", ""),
+            "manageIp": log.get("manage_ip", ""),
+            "calIp": log.get("cal_ip", ""),
+            "result": log.get("result", ""),
+            "createdAt": log.get("created_at", ""),
+            "operator": log.get("operator", ""),
         }
         result.append(item)
-    return NodeInfoSchema(many=True).dump(result).data, 200
+    return json.dumps(result), 200

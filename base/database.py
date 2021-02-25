@@ -3,17 +3,17 @@ from peewee import *
 DATABASE = "xcat-nodes.db"
 DEBUG = True
 
-database = SqliteDatabase(DATABASE)
+db = SqliteDatabase(DATABASE)
 
 
 def create_tables():
-    with database:
-        database.create_tables([NodeInfo])
+    with db:
+        db.create_tables([NodeInfo])
 
 
 class BaseModel(Model):
     class Meta:
-        database = database
+        database = db
 
 
 class NodeInfo(BaseModel):
@@ -29,5 +29,5 @@ class NodeInfo(BaseModel):
     operator = CharField()              # 操作人员
     script = TextField()                # 自定义脚本
     created_at = DateTimeField()        # 创建时间
-    mac = CharField(unique=True)        # mac 地址
+    mac = CharField()                   # mac 地址
 
