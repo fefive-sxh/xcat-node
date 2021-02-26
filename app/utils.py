@@ -50,20 +50,22 @@ def str_to_map(string: str):
 
 # 测试是否安装成功
 def check_install(manage_ip):
-    process = sp.Popen(f"ping -c 4 {manage_ip}", stdout=sp.PIPE, shell=True)
+    s = time.time()
+    process = sp.Popen(f"ping -c 1 {manage_ip}", stdout=sp.PIPE, shell=True)
     out, err = process.communicate()
+    e = time.time()
+    t = e - s
+    print(t)
     return err is None
 
 
 def wait_install(*, node, manage_ip):
-    flag = True
     # 首先等待50分钟
     # time.sleep(50*60)
     ok = check_install(manage_ip=manage_ip)
-    if not ok and flag:
+    if not ok:
         # 若没有安装成功 再等待一个5分钟
         time.sleep(60)
-        flag = False
         ok = check_install(manage_ip)
 
     now = time.strftime("%Y-%m-%d %H:%M", time.localtime())
