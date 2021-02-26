@@ -59,7 +59,7 @@ def update_node_info(*, bmc: str, os: str, nvd: str, manage_ip: str, cal_ip: str
                 "manage_ip": manage_ip,
                 "cal_ip": cal_ip,
                 "script": script,
-                "operator": "234",
+                "operator": "admin",
                 "created_at": now,  # todo 验证是否正确
                 "finish_at": "",
                 "result": "",
@@ -73,7 +73,6 @@ def update_node_info(*, bmc: str, os: str, nvd: str, manage_ip: str, cal_ip: str
             info.manage_ip = manage_ip
             info.cal_ip = cal_ip
             info.script = script
-            info.operator = "admin"
             info.created_at = now
             info.finish_at = ""
             info.result = ""
@@ -96,8 +95,8 @@ def update_node_info(*, bmc: str, os: str, nvd: str, manage_ip: str, cal_ip: str
         return err
 
     # 此时可以开一个线程去监听是否安装成功
-    thread = threading.Thread(target=wait_install(node=node, manage_ip=manage_ip))
-    thread.run()
+    thread = threading.Thread(target=wait_install, daemon=True, args=(node, manage_ip))
+    thread.start()
 
     # 3. 执行安装 `rsetboot 节点名 net`  `rpower 节点名 reset`
     shell1 = f"{ssh1} rsetboot {node} net"
