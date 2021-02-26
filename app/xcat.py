@@ -46,7 +46,7 @@ def get_nodes_info() -> List[dict]:
 
 
 def update_node_info(*, bmc: str, os: str, nvd: str, manage_ip: str, cal_ip: str, script: str, node: str):
-    now = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+    now = time.strftime("%Y-%m-%d %H:%M", time.localtime())
     with db.atomic():
         info, created = NodeInfo.get_or_create(
             node=node,
@@ -73,6 +73,9 @@ def update_node_info(*, bmc: str, os: str, nvd: str, manage_ip: str, cal_ip: str
     osimage = f"{os}-x86_64-install-compute-{nvd}"
     cmd = f"{ssh} nodeset {node} osimage={osimage}"
     process2 = sp.Popen(cmd, stdout=sp.PIPE, shell=True)
+    out, err = process2.communicate()
+    if err:
+        return err
 
     # 此时可以开一个线程去监听是否安装成功
     thread = threading.Thread(target=wait_install(node=node, manage_ip=manage_ip))
@@ -82,5 +85,13 @@ def update_node_info(*, bmc: str, os: str, nvd: str, manage_ip: str, cal_ip: str
     shell1 = f"{ssh} rsetboot {node} net"
     shell2 = f"{ssh} rpower {node} reset"
     process3 = sp.Popen(shell1, stdout=sp.PIPE, shell=True)
+    out, err = process3.communicate()
+    if err:
+        return err
+
     process4 = sp.Popen(shell2, stdout=sp.PIPE, shell=True)
-    return
+    out, err = process4.communicate()
+    if err:
+        return err
+
+    return None

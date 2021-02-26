@@ -1,6 +1,7 @@
+import time
+
 from flask import request, json, jsonify
 
-from app.schema import NodeInfoSchema
 from app.xcat import get_nodes_info, update_node_info
 
 
@@ -46,8 +47,9 @@ def update_node_view(node: str):
     bmc = params["bmc"]
 
     if name == node:
-        update_node_info(os=os, nvd=nvidia, manage_ip=manage_ip, cal_ip=cal_ip, script=script, node=name, bmc=bmc)
-        return {}, 200
+        err = update_node_info(os=os, nvd=nvidia, manage_ip=manage_ip, cal_ip=cal_ip, script=script, node=name, bmc=bmc)
+        if not err:
+            return {}, 200
     return {}, 400
 
 

@@ -66,7 +66,7 @@ def wait_install(*, node, manage_ip):
         flag = False
         ok = check_install(manage_ip)
 
-    now = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+    now = time.strftime("%Y-%m-%d %H:%M", time.localtime())
     # 将结果同步到数据库中
     n = NodeInfo.update(
         result="success" if ok else "unsuccess",
