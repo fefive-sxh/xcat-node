@@ -47,7 +47,9 @@ def get_nodes_info() -> List[dict]:
 
 def update_node_info(*, bmc: str, os: str, nvd: str, manage_ip: str, cal_ip: str, script: str, node: str):
     now = time.strftime("%Y-%m-%d %H:%M", time.localtime())
+    manage_ip = "10.10.100.92"
     with db.atomic():
+        # 获得或者创建
         info, created = NodeInfo.get_or_create(
             node=node,
             defaults={
@@ -57,21 +59,37 @@ def update_node_info(*, bmc: str, os: str, nvd: str, manage_ip: str, cal_ip: str
                 "manage_ip": manage_ip,
                 "cal_ip": cal_ip,
                 "script": script,
-                "operator": "admin",
+                "operator": "234",
                 "created_at": now,  # todo 验证是否正确
                 "finish_at": "",
                 "result": "",
             }
         )
+        # 若存在, 则进行更新
+        if not created:
+            info.os = os
+            info.nvidia = nvd
+            info.bmc = bmc
+            info.manage_ip = manage_ip
+            info.cal_ip = cal_ip
+            info.script = script
+            info.operator = "admin"
+            info.created_at = now
+            info.finish_at = ""
+            info.result = ""
+            info.save()
 
     # 从命令行更新
     # 1. 修改属性
-    process1 = sp.Popen(f"chdef -t node {node} ip={manage_ip}", stdout=sp.PIPE, shell=True)
-    # out, err = process.communicate()
+    process1 = sp.Popen(f"{ssh} chdef -t node {node} ip={manage_ip}", stdout=sp.PIPE, shell=True)
+    out, err = process1.communicate()
+    if err:
+        return err
 
     # 2. 配置操作系统和GPU驱动 nodeset 节点名 osimage=操作系统版本-x86_64-install-compute-cuda版本号
     osimage = f"{os}-x86_64-install-compute-{nvd}"
-    cmd = f"{ssh} nodeset {node} osimage={osimage}"
+    ssh1 = "ssh root@10.10.100.91"
+    cmd = f"{ssh1} nodeset {node} osimage={osimage}"
     process2 = sp.Popen(cmd, stdout=sp.PIPE, shell=True)
     out, err = process2.communicate()
     if err:
@@ -82,8 +100,8 @@ def update_node_info(*, bmc: str, os: str, nvd: str, manage_ip: str, cal_ip: str
     thread.run()
 
     # 3. 执行安装 `rsetboot 节点名 net`  `rpower 节点名 reset`
-    shell1 = f"{ssh} rsetboot {node} net"
-    shell2 = f"{ssh} rpower {node} reset"
+    shell1 = f"{ssh1} rsetboot {node} net"
+    shell2 = f"{ssh1} rpower {node} reset"
     process3 = sp.Popen(shell1, stdout=sp.PIPE, shell=True)
     out, err = process3.communicate()
     if err:
