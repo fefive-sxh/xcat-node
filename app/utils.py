@@ -1,6 +1,5 @@
 import subprocess as sp
 import time
-from datetime import datetime
 
 from base.database import NodeInfo
 
@@ -56,10 +55,10 @@ def check_install(manage_ip):
     return err is None
 
 
-def wait_install(*, node, bmc, manage_ip):
+def wait_install(*, node, manage_ip):
     flag = True
     # 首先等待50分钟
-    time.sleep(50*60)
+    # time.sleep(50*60)
     ok = check_install(manage_ip=manage_ip)
     if not ok and flag:
         # 若没有安装成功 再等待一个5分钟
@@ -67,12 +66,11 @@ def wait_install(*, node, bmc, manage_ip):
         flag = False
         ok = check_install(manage_ip)
 
+    now = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
     # 将结果同步到数据库中
-    n = NodeInfo.select().where(
-        NodeInfo.node == node,
-        NodeInfo.bmc == bmc
-    ).get()
+    n = NodeInfo.update(
+        result="success" if ok else "unsuccess",
+        finish_at=now
+    ).where(NodeInfo.node == node)
 
-    n.result = "success" if ok else "unsuccess"
-    n.finish_at = datetime.now()
-    n.save()
+    n.execute()

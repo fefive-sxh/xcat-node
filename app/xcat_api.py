@@ -25,9 +25,9 @@ def get_nodes():
     return get_nodes_view()
 
 
-@app.route("/v1/xcat/nodes/<nodeId>", methods=["PUT"])
-def update_node(nodeId):
-    return update_node_view(node_id=nodeId)
+@app.route("/v1/xcat/nodes/<node>", methods=["PUT"])
+def update_node(node):
+    return update_node_view(node=node)
 
 
 @app.route("/v1/xcat/nodes/log", methods=["GET"])
