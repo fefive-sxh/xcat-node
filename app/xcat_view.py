@@ -11,6 +11,9 @@ def get_nodes_view():
     node_list = get_nodes_info()
     result = []
     for node in node_list:
+        create = str(node.get("created_at", ""))
+        create = create[:create.rfind(":")] if create else ""
+
         item = {
             "id": node.get("id", ""),
             "node": node.get("node", ""),
@@ -19,7 +22,7 @@ def get_nodes_view():
             "bmc": node.get("bmc", ""),
             "manageIp": node.get("manage_ip", ""),
             "calIp": node.get("cal_ip", ""),
-            "createdAt": node.get("created_at", ""),
+            "createdAt": create,
             "script": node.get("script", "")
         }
 
@@ -59,8 +62,14 @@ def get_nodes_log_view():
     log_list = get_nodes_log()
     result = []
     for log in log_list:
+        create = str(log.get("createdAt", ""))
+        finish = str(log.get("finishAt", ""))
+
+        create = create[:create.rfind(":")] if create else ""
+        finish = finish[:finish.rfind(":")] if finish else ""
+
         item = {
-            "finishAt": log.get("finish_at", ""),
+            "finishAt": finish,
             "node": log.get("node", ""),
             "os": log.get("os", ""),
             "nvidia": log.get("nvidia", ""),
@@ -68,7 +77,7 @@ def get_nodes_log_view():
             "manageIp": log.get("manage_ip", ""),
             "calIp": log.get("cal_ip", ""),
             "result": log.get("result", ""),
-            "createdAt": log.get("created_at", ""),
+            "createdAt": create,
             "operator": log.get("operator", ""),
         }
         result.append(item)

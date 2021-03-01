@@ -1,5 +1,4 @@
 import time
-from datetime import datetime
 from typing import List
 import threading
 import subprocess as sp
@@ -10,11 +9,9 @@ from app.utils import parse_output, wait_install
 from base.database import NodeInfo, db, NodeLog
 
 # 　设置一下远程登录, 部署在远程 则不需要 ssh
-# ssh = "ssh root@10.10.100.90"
+ssh = "ssh root@10.10.100.90"
 ssh1 = "ssh root@10.10.100.91"
-
-ssh = ""
-
+# ssh = ""
 
 
 def get_nodes_info() -> List[dict]:
@@ -55,8 +52,8 @@ def get_nodes_info() -> List[dict]:
 
 
 def update_node_info(*, bmc: str, os: str, nvd: str, manage_ip: str, cal_ip: str, script: str, node: str):
-    now = time.strftime("%Y-%m-%d %H:%M", time.localtime())
-    # manage_ip = "10.10.100.92"
+    now = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+    manage_ip = "10.10.100.92"
     # 操作 NodeInfo
     with db.atomic():
         # 获得或者创建
@@ -86,6 +83,7 @@ def update_node_info(*, bmc: str, os: str, nvd: str, manage_ip: str, cal_ip: str
             info.created_at = now
             info.finish_at = ""
             info.result = ""
+            info.operator = "admin"
             info.save()
 
     with db.atomic():
