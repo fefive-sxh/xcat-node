@@ -54,7 +54,7 @@ def get_nodes_info() -> List[dict]:
 
 def update_node_info(*, bmc: str, os: str, nvd: str, manage_ip: str, cal_ip: str, script: str, node: str):
     now = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-    manage_ip = "10.10.100.92"
+
     # 操作 NodeInfo
     with db.atomic():
         # 获得或者创建
@@ -103,6 +103,7 @@ def update_node_info(*, bmc: str, os: str, nvd: str, manage_ip: str, cal_ip: str
             script=script
         )
 
+    manage_ip = "10.10.100.92"
     # 从命令行更新
     # 1. 修改属性
     process1 = sp.Popen(f"{ssh} chdef -t node {node} ip={manage_ip}", stdout=sp.PIPE, shell=True)
