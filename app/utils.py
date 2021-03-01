@@ -56,7 +56,7 @@ def check_install(manage_ip):
     return err is None
 
 
-def wait_install(node, manage_ip):
+def wait_install(node, manage_ip, created_at):
     # 首先等待50分钟
     time.sleep(50*60)
     ok = check_install(manage_ip=manage_ip)
@@ -70,6 +70,6 @@ def wait_install(node, manage_ip):
     n = NodeInfo.update(
         result="success" if ok else "unsuccess",
         finish_at=now
-    ).where(NodeInfo.node == node)
+    ).where(NodeInfo.node == node & NodeInfo.created_at == created_at)
 
     n.execute()

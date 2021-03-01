@@ -1,8 +1,6 @@
-import time
+from flask import request, jsonify
 
-from flask import request, json, jsonify
-
-from app.xcat import get_nodes_info, update_node_info
+from app.xcat import get_nodes_info, update_node_info, get_nodes_log
 
 
 def get_nodes_view():
@@ -58,7 +56,7 @@ def get_nodes_log_view():
     获得节点日志
     :return:
     """
-    log_list = get_nodes_info()
+    log_list = get_nodes_log()
     result = []
     for log in log_list:
         item = {
