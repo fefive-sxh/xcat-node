@@ -21,7 +21,7 @@ def get_nodes_view():
             "bmc": node.get("bmc", ""),
             "manageIp": node.get("manage_ip", ""),
             "calIp": node.get("cal_ip", ""),
-            "cratedAt": node.get("created_at", ""),
+            "createdAt": node.get("created_at", ""),
             "script": node.get("script", "")
         }
 
