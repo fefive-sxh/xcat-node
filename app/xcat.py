@@ -44,7 +44,7 @@ def get_nodes_info() -> List[dict]:
             node["operator"] = item.operator
             node["result"] = item.result
             node["bmc"] = item.bmc
-            node["finish_at"]
+            node["finish_at"] = item.finish_at
 
     return result
 
@@ -64,7 +64,7 @@ def update_node_info(*, bmc: str, os: str, nvd: str, manage_ip: str, cal_ip: str
                 "cal_ip": cal_ip,
                 "script": script,
                 "operator": "admin",
-                "created_at": now,  # todo 验证是否正确
+                "created_at": now,
                 "finish_at": "",
                 "result": "",
             }

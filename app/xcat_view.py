@@ -74,4 +74,4 @@ def get_nodes_log_view():
             "operator": log.get("operator", ""),
         }
         result.append(item)
-    return json.dumps(result), 200
+    return jsonify(result), 200
