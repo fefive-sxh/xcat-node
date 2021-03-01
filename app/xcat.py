@@ -9,9 +9,10 @@ from app.utils import parse_output, wait_install
 from base.database import NodeInfo, db, NodeLog
 
 # 　设置一下远程登录, 部署在远程 则不需要 ssh
-ssh = "ssh root@10.10.100.90"
+# ssh = "ssh root@10.10.100.90"
 ssh1 = "ssh root@10.10.100.91"
-# ssh = ""
+
+ssh = ""
 
 
 def get_nodes_info() -> List[dict]:
