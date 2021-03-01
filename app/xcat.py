@@ -35,12 +35,16 @@ def get_nodes_info() -> List[dict]:
             continue
 
         if item:
-            node["manageIp"] = item.manage_ip
+            node["manage_ip"] = item.manage_ip
             node["os"] = item.os
             node["nvidia"] = item.nvidia
             node["script"] = item.script
-            node["calIp"] = item.cal_ip
-            node["createdAt"] = item.created_at
+            node["cal_ip"] = item.cal_ip
+            node["created_at"] = item.created_at
+            node["operator"] = item.operator
+            node["result"] = item.result
+            node["bmc"] = item.bmc
+            node["finish_at"]
 
     return result
 
