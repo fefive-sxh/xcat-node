@@ -10,9 +10,10 @@ from base.database import NodeInfo, db, NodeLog
 
 # 　设置一下远程登录, 部署在远程 则不需要 ssh
 # ssh = "ssh root@10.10.100.90"
-ssh1 = "ssh root@10.10.100.91"
+# ssh1 = "ssh root@10.10.100.91"
 
 ssh = ""
+ssh1 = ""
 
 
 def get_nodes_info() -> List[dict]:
@@ -103,7 +104,7 @@ def update_node_info(*, bmc: str, os: str, nvd: str, manage_ip: str, cal_ip: str
             script=script
         )
 
-    manage_ip = "10.10.100.92"
+    # manage_ip = "10.10.100.92" // mock测试用
     # 从命令行更新
     # 1. 修改属性
     process1 = sp.Popen(f"{ssh} chdef -t node {node} ip={manage_ip}", stdout=sp.PIPE, shell=True)
