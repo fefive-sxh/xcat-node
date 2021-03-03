@@ -90,7 +90,7 @@ def update_node_info(*, bmc: str, os: str, nvd: str, manage_ip: str, cal_ip: str
 
     with db.atomic():
         # 创建日志记录
-        log = NodeLog.create(
+        NodeLog.create(
             node=node,
             os=os,
             nvidia=nvd,
