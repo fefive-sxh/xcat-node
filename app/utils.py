@@ -58,7 +58,7 @@ def check_install(manage_ip):
 
 def wait_install(node, manage_ip, created):
     # 首先等待50分钟
-    # time.sleep(50*60)
+    time.sleep(50*60)
     ok = check_install(manage_ip=manage_ip)
     if not ok:
         # 若没有安装成功 再等待一个5分钟
