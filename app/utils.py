@@ -50,10 +50,10 @@ def str_to_map(string: str):
 
 # 测试是否安装成功
 def check_install(manage_ip):
-    process = sp.Popen(f"ping -c 1 {manage_ip}", stdout=sp.PIPE, shell=True)
-    out, err = process.communicate()
+    r = sp.run(["ping", "-c", "1", manage_ip])
 
-    return err is None
+    # 显示0 代表主机可以ping成功,
+    return r.returncode == 0
 
 
 def wait_install(node, manage_ip, created):
